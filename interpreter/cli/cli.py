@@ -6,6 +6,7 @@ import pkg_resources
 import appdirs
 from ..utils.display_markdown_message import display_markdown_message
 from ..terminal_interface.conversation_navigator import conversation_navigator
+from security import safe_command
 
 arguments = [
     {
@@ -120,10 +121,10 @@ def cli(interpreter):
         else:
             try:
                 # Try using xdg-open on non-Windows platforms
-                subprocess.call(['xdg-open', config_path])
+                safe_command.call(subprocess.call, ['xdg-open', config_path])
             except FileNotFoundError:
                 # Fallback to using 'open' on macOS if 'xdg-open' is not available
-                subprocess.call(['open', config_path])
+                safe_command.call(subprocess.call, ['open', config_path])
         return
     
     # TODO Implement model explorer
