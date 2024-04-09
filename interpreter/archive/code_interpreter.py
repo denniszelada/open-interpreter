@@ -29,6 +29,7 @@ import ast
 import sys
 import os
 import re
+from security import safe_command
 
 
 def run_html(html_content):
@@ -103,7 +104,7 @@ class CodeInterpreter:
     start_cmd = language_map[self.language]["start_cmd"]
 
     # Use the appropriate start_cmd to execute the code
-    self.proc = subprocess.Popen(start_cmd.split(),
+    self.proc = safe_command.run(subprocess.Popen, start_cmd.split(),
                                  stdin=subprocess.PIPE,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
