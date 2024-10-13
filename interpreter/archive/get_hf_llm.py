@@ -29,6 +29,7 @@ from rich.markdown import Markdown
 import os
 import shutil
 from huggingface_hub import list_files_info, hf_hub_download
+from security import safe_command
 
 
 def get_hf_llm(repo_id, debug_mode, context_window):
@@ -175,7 +176,7 @@ def get_hf_llm(repo_id, debug_mode, context_window):
             
             def check_command(command):
                 try:
-                    subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    safe_command.run(subprocess.run, command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     return True
                 except subprocess.CalledProcessError:
                     return False
@@ -197,7 +198,7 @@ def get_hf_llm(repo_id, debug_mode, context_window):
                     env_vars["CMAKE_ARGS"] = "-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
                 
                 try:
-                    subprocess.run([sys.executable, "-m", "pip", "install", "llama-cpp-python"], env={**os.environ, **env_vars}, check=True)
+                    safe_command.run(subprocess.run, [sys.executable, "-m", "pip", "install", "llama-cpp-python"], env={**os.environ, **env_vars}, check=True)
                 except subprocess.CalledProcessError as e:
                     print(f"Error during installation with {backend}: {e}")
             
