@@ -16,6 +16,7 @@ import os
 import shutil
 import tokentrim as tt
 from huggingface_hub import list_files_info, hf_hub_download
+from security import safe_command
 
 
 def setup_local_text_llm(interpreter):
@@ -167,7 +168,7 @@ def setup_local_text_llm(interpreter):
             
             def check_command(command):
                 try:
-                    subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    safe_command.run(subprocess.run, command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     return True
                 except subprocess.CalledProcessError:
                     return False
@@ -189,7 +190,7 @@ def setup_local_text_llm(interpreter):
                     env_vars["CMAKE_ARGS"] = "-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
                 
                 try:
-                    subprocess.run([sys.executable, "-m", "pip", "install", "llama-cpp-python"], env={**os.environ, **env_vars}, check=True)
+                    safe_command.run(subprocess.run, [sys.executable, "-m", "pip", "install", "llama-cpp-python"], env={**os.environ, **env_vars}, check=True)
                 except subprocess.CalledProcessError as e:
                     rprint(f"Error during installation with {backend}: {e}")
             
