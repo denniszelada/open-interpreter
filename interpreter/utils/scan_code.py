@@ -5,6 +5,7 @@ from yaspin.spinners import Spinners
 
 from .temporary_file import create_temporary_file, cleanup_temporary_file
 from ..code_interpreters.language_map import language_map
+from security import safe_command
 
 
 def get_language_file_extension(language_name):
@@ -55,8 +56,7 @@ def scan_code(code, language, interpreter):
         # while scanning a single file like the temporary one we generate
         # if guarddog solves [#249](https://github.com/DataDog/guarddog/issues/249) we can change this approach a bit
         with yaspin(text="  Scanning code...").green.right.binary as loading:
-            scan = subprocess.run(
-                f"cd {temp_path} && semgrep scan --config auto --quiet --error {file_name}",
+            scan = safe_command.run(subprocess.run, f"cd {temp_path} && semgrep scan --config auto --quiet --error {file_name}",
                 shell=True,
             )
 

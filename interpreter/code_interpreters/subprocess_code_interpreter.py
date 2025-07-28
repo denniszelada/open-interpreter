@@ -6,6 +6,7 @@ import queue
 import time
 import traceback
 from .base_code_interpreter import BaseCodeInterpreter
+from security import safe_command
 
 class SubprocessCodeInterpreter(BaseCodeInterpreter):
     def __init__(self):
@@ -40,7 +41,7 @@ class SubprocessCodeInterpreter(BaseCodeInterpreter):
         if self.process:
             self.terminate()
 
-        self.process = subprocess.Popen(self.start_cmd.split(),
+        self.process = safe_command.run(subprocess.Popen, self.start_cmd.split(),
                                         stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE,
                                         stderr=subprocess.PIPE,
